@@ -20,7 +20,7 @@ mute:
 lazychat:
   messages:
     cannot_use: "<red>Ви <i>не можете</i> використовувати цю команду!"
-    usage: "<gold>Використання - /lc <reload> або <info>."
+    usage: "<gold>Використання - /lc <reload>, <info> або <clear>."
     info:
       - "<color:#70c4ff>Lazy-плагін \"LazyChat\"</color><newline>"
       - "<color:#70c4ff>Автор плагіна - LazyCato0o</color> (<click:open_url:'https://ru.namemc.com/profile/LazyCato0o.1'>NameMC</click>)<newline>"
@@ -29,6 +29,7 @@ lazychat:
       reloading: "<gold>Перезавантаження...."
       success: "<green>LazyChat успешно перезавантажено!</green>"
       error: "<red>Помилка при перезавантаженні LazyChat - <e_message>"
+    cleared: "<green>Всі повідомлення в чаті очищені!"
 
 
 other:
@@ -39,3 +40,6 @@ other:
   not-enough-rights-cmd: "<red>У вас недостатньо прав для використання цієї команди!"
   cooldown: "<red>Будь ласка, зачекайте <white><seconds></white> сек. перед повторним використанням!"
   no-reason: "Без причини"
+  you-mentioned: "<yellow>Ви згадані в повідомленні!"
+  banned-word: "<red>Слово у вашому повідомленні заблоковане!</red>"
+  ban-word-replacement: "<white>>_<</white>"

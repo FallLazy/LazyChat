@@ -17,11 +17,10 @@ mute:
     unmuted: "<green><player> был размучен!"
     yj_unmuted: "<green>Вы были размучены!</green>"
 
-
 lazychat:
   messages:
     cannot_use: "<red>Вы <i>не можете</i> использовать эту команду!"
-    usage: "<gold>Использование - /lc <reload> или <info>."
+    usage: "<gold>Использование - /lc <reload>, <info> или <clear>."
     info:
       - "<color:#70c4ff>Lazy-плагин \"LazyChat\"</color><newline>"
       - "<color:#70c4ff>Автор плагина - LazyCato0o</color> (<click:open_url:'https://ru.namemc.com/profile/LazyCato0o.1'>NameMC</click>)<newline>"
@@ -30,6 +29,7 @@ lazychat:
       reloading: "<gold>Перезагрузка..."
       success: "<green>LazyChat успешно перезагружен!</green>"
       error: "<red>Ошибка при перезагрузке LazyChat - <e_message>"
+    cleared: "<green>Все сообщения в чате очищены!"
 
 other:
   ofp: "<red>Только для игроков <i>(или админов)</i>!"
@@ -39,3 +39,6 @@ other:
   not-enough-rights-cmd: "<red>У вас недостаточно прав для использования этой команды!"
   cooldown: "<red>Пожалуйста, подождите <white><seconds></white> сек. перед повторным использованием!"
   no-reason: "Без причины"
+  you-mentioned: "<yellow>Вы упомянуты в сообщении!"
+  banned-word: "<red>Слово в вашем сообщении заблокировано!</red>"
+  ban-word-replacement: "<white>>_<</white>"

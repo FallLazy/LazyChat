@@ -20,7 +20,7 @@ mute:
 lazychat:
   messages:
     cannot_use: "<red>You <i>cannot</i> use this command!"
-    usage: "<gold>Usage - /lc <reload> or <info>."
+    usage: "<gold>Usage - /lc <reload>, <info> or <clear>."
     info:
       - "<color:#70c4ff>Lazy-Plugin \"LazyChat\"</color><newline>"
       - "<color:#70c4ff>Author of plugin - LazyCato0o</color> (<click:open_url:'https://ru.namemc.com/profile/LazyCato0o.1'>NameMC</click>)<newline>"
@@ -29,7 +29,7 @@ lazychat:
       reloading: "<gold>Reloading..."
       success: "<green>LazyChat has successfully reloaded!</green>"
       error: "<red>LazyChat meet error(s) while reloading - <e_message>"
-
+    cleared: "<green>All messages in chat are cleared!"
 
 other:
   ofp: "<red>Only for players <i>(or admins)</i>!"
@@ -39,3 +39,6 @@ other:
   not-enough-rights-cmd: "<red>You do not have enough rights to use this command!"
   cooldown: "<red>Please, wait <white><seconds><white> seconds before using it again!"
   no-reason: "No reason"
+  you-mentioned: "<yellow>You're mentioned in message!"
+  banned-word: "<red>Word in your message is banned!</red>"
+  ban-word-replacement: "<white>>_<</white>"

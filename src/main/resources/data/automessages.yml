@@ -1,0 +1,4 @@
+example-message:
+  time: 120 # Time what message will send. In seconds
+  message: "<gold>Hello world!</gold>"
+  enabled: false # Will this message enabled?

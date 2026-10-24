@@ -3,6 +3,8 @@
 LazyChat - It's a Chat system, that adds MiniMessage to chat, broadcasts and signs.  
 And... it has a lot of things, that can be configured.
 
+[Documentation of plugin](https://falllazy.github.io/LazyChat_docs/) (ukr is outdated)
+
 ## For developers
 ### Gradle  
 Add repository to your build.gradle:

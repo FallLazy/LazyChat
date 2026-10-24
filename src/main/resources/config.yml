@@ -1,4 +1,4 @@
-config-version: 5
+config-version: 6
 
 #  @      @@@  @@@@@ @   @  @@@  @   @  @@@  @@@@@            @   @  @@@  @@@@  @@@@@ @@@@  @   @
 #  @     @   @    @   @ @  @     @   @ @   @   @              @@ @@ @   @ @   @ @     @   @ @@  @
@@ -14,10 +14,17 @@ options:
   broadcast-cooldown: 70 # Cooldown in seconds. Used for guys cannot to spam with broadcasts
   chat-default-cooldown: 1 # Cooldown in seconds. Needed for remove spam. But, in every internal chat (global.yml etc.) uses their own cooldown
 
-  # Enables some experiments like .json for chats or databases for mutes.
+  ban-words:
+    type: replacement # There three settings of this option. replacement — replaces word in message to >-< (can be configured in language file); cancel — cancels send of message; nothing — literally do nothing
+    send-message: true # Sends message to player when player want use banned word
+
+  # Enables some experiments like .json for chats.
   experiments:
     jsonForChats: false
-    databasesForMute: false
+    mentions: false
+  # Deprecated functional of plugin
+  deprecations:
+    ymlForMute: false
 
 chats:
   global:
@@ -63,3 +70,4 @@ blacklist:
       - sprite
       - click
   signs: false # Disables able for players for use MiniMessage on signs. By default, enabled (or in other words on false).
+  books: false # Disables able for players for use MiniMessage in books.

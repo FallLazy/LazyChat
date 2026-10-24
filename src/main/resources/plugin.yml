@@ -1,6 +1,6 @@
 name: LazyChat-M
 version: '${version}'
-main: dev.lazycat.lazyChat.LazyChat
+main: dev.falllazy.lazyChat.LazyChat
 description: LazyChat but community
 author: LazyCato0o
 website: https://github.com/LazyCat0/LazyChat-MC-plugin
@@ -29,7 +29,7 @@ commands:
   lazychat:
     description: Main command of plugin.
     aliases: [lc, l-chat, lazy-c, lazy-chat]
-    usage: /<command> <info/reload>
+    usage: /<command> <info/reload/clear>
   lbroadcast:
     description: Broadcast a your message with better "style"
     aliases: [lbc]
