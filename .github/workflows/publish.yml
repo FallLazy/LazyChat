@@ -69,6 +69,7 @@ jobs:
             paper
             purpur
           game-versions: |
+            1.20.x
             1.21.x
             26.x
 
@@ -80,4 +81,4 @@ jobs:
           version: ${{ env.VERSION }}
           channel: "Release"
           description: ${{ env.CHANGELOG }}
-          files: '[{"path": "target/lazychat-${{ env.VERSION }}.jar", "platforms": ["PAPER"], "platformVersions": ["1.21.x", "26.x"]}]'
+          files: '[{"path": "target/lazychat-${{ env.VERSION }}.jar", "platforms": ["PAPER"], "platformVersions": ["1.20.x", "1.21.x", "26.x"]}]'
