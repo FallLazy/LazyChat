@@ -13,7 +13,7 @@ public class MentionEvent extends Event implements Cancellable {
     private boolean cancelled;
     private Player messageAuthor;
     private Player mentioned;
-    private Component messageContent;
+    private final Component messageContent;
 
     /**
      * Event, that says: "Hey, player just sent minimessage-message!"
@@ -60,9 +60,5 @@ public class MentionEvent extends Event implements Cancellable {
 
     public Component getMessageContent() {
         return messageContent;
-    }
-
-    public void setMessageContent(Component messageContent) {
-        this.messageContent = messageContent;
     }
 }
