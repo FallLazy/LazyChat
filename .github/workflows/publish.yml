@@ -43,8 +43,7 @@ jobs:
           version: ${{ env.VERSION }}
           name: "v${{ env.VERSION }}"
           files: |
-            target/*.jar
-            !target/original-*.jar
+            target/lazychat-${{ env.VERSION }}.jar
           changelog-file: RELEASE_NOTES.md
           loaders: |
             paper
