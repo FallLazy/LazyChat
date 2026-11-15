@@ -52,14 +52,3 @@ jobs:
             1.20.x
             1.21.x
             26.x
-
-      - name: Publish to Hangar
-        uses: benwoo1110/hangar-upload-action@v1
-        with:
-          api_token: ${{ secrets.HANGAR_PUBLISH }}
-          slug: "LazyChat"
-          version: ${{ env.VERSION }}
-          channel: "Release"
-          description: ${{ env.CHANGELOG }}
-          platform_dependencies: '{"PAPER": ["1.20.x", "1.21.x", "26.x"]}'
-          files: '[{"path": "target/lazychat-${{ env.VERSION }}.jar", "platforms": ["PAPER"]}]'
