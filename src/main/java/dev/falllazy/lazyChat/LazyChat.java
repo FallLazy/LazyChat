@@ -11,9 +11,9 @@ import dev.falllazy.lazyChat.commands.LCCommandKt;
 import dev.falllazy.lazyChat.commands.muteCommand.MuteCommand;
 import dev.falllazy.lazyChat.commands.muteCommand.MuteCommandCompleter;
 import dev.falllazy.lazyChat.listeners.FormatListener;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.Objects;
 
 public final class LazyChat extends JavaPlugin {
@@ -69,6 +69,10 @@ public final class LazyChat extends JavaPlugin {
         // And finally, CHAT!
         chatManager = new CManager(this);
         getServer().getPluginManager().registerEvents(new ChatListener(this,chatManager), this);
+
+        // and there bstats
+        int pluginId = 35362;
+        new Metrics(this, pluginId);
     }
     public LanguageManager getLang() {
         return lang;
@@ -103,11 +107,6 @@ public final class LazyChat extends JavaPlugin {
         if (!getConfig().contains("config-version") || getConfig().getInt("config-version") < 5) {
             getLogger().severe("Unknown config version or not supported. Deleting it and creating default");
 
-            File configFile = new File(getDataFolder(), "config.yml");
-            if (configFile.exists()) {
-                configFile.delete();
-            }
-
             saveResource("config.yml", true);
             reloadConfig();
             return;
@@ -137,13 +136,13 @@ public final class LazyChat extends JavaPlugin {
     private void sendLog() {
         String asciiArt = """
             ##         #####    #########  ##      ##    ######   ##      ##   #####    #########
-            ##        ##   ##          ##  ##      ##   ##    ##  ##      ##  ##   ##       ##    
-            ##       ##     ##        ##    ##    ##    ##        ##      ## ##     ##      ##    
-            ##       #########       ##      ##  ##     ##        ########## #########      ##    
-            ##       ##     ##      ##        ####      ##        ##      ## ##     ##      ##    
-            ##       ##     ##     ##          ##       ##    ##  ##      ## ##     ##      ##    
-            ##       ##     ##    ##           ##        #    #   ##      ## ##     ##      ##    
-            ######## ##     ##    #########    ##        ######   ##      ## ##     ##      ##    
+            ##        ##   ##          ##  ##      ##   ##    ##  ##      ##  ##   ##       ##
+            ##       ##     ##        ##    ##    ##    ##        ##      ## ##     ##      ##
+            ##       #########       ##      ##  ##     ##        ########## #########      ##
+            ##       ##     ##      ##        ####      ##        ##      ## ##     ##      ##
+            ##       ##     ##     ##          ##       ##    ##  ##      ## ##     ##      ##
+            ##       ##     ##    ##           ##        #    #   ##      ## ##     ##      ##
+            ######## ##     ##    #########    ##        ######   ##      ## ##     ##      ##
             """;
         for (String line : asciiArt.split("\n")) {
             getServer().getConsoleSender().sendMessage(line);

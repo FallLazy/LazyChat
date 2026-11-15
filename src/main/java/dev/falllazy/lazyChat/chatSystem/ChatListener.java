@@ -1,6 +1,8 @@
 package dev.falllazy.lazyChat.chatSystem;
 
 import dev.falllazy.lazyChat.LazyChat;
+import dev.falllazy.lazyChat.api.events.MentionEvent;
+import dev.falllazy.lazyChat.api.events.MessageSentEvent;
 import dev.falllazy.lazyChat.chatSystem.configs.BlacklistConfig;
 import dev.falllazy.lazyChat.language.LanguageManager;
 import io.papermc.paper.event.player.AsyncChatEvent;
@@ -43,7 +45,6 @@ public class ChatListener implements Listener {
     private final LazyChat lazyChat;
     private final CManager chatManager;
     private final LanguageManager lang;
-    private final MiniMessage mm = MiniMessage.miniMessage();
     private LuckPerms luckPerms = null;
 
     private static final Pattern TAG_PATTERN = Pattern.compile("<(/?)([a-zA-Z0-9_\\-]+)(:[^>]*)?>");
@@ -69,16 +70,19 @@ public class ChatListener implements Listener {
     public void onAsyncChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
 
-        if (lazyChat.muteManager.isMuted(player.getUniqueId())) {
-            player.sendMessage(lang.getFormated("mute.messages.you_muted"));
-            event.setCancelled(true);
-            return;
-        }
-
         MiniMessage mm = MiniMessage.miniMessage();
 
         Component originalMessage = event.message();
         String plainText = PlainTextComponentSerializer.plainText().serialize(originalMessage);
+
+        MessageSentEvent messageSentEvent = new MessageSentEvent(player, false, originalMessage);
+
+        if (lazyChat.muteManager.isMuted(player.getUniqueId())) {
+            player.sendMessage(lang.getFormated("mute.messages.you_muted"));
+            event.setCancelled(true);
+            messageSentEvent.setMuted(true);
+            return;
+        }
 
         Chat chat = chatManager.getChatForMessage(plainText);
         if (chat == null) {
@@ -156,12 +160,14 @@ public class ChatListener implements Listener {
                 recipientIds.add(p.getUniqueId());
             }
         }
-
         if (plugin.getConfig().getBoolean("options.experiments.mentions")) {
             if (!mentioned.isEmpty()) {
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     for (Player target : mentioned) {
-                        if (target.getUniqueId().equals(player.getUniqueId())) continue;
+                        MentionEvent mentionEvent = new MentionEvent(player, target, formatted);
+                        Bukkit.getPluginManager().callEvent(mentionEvent);
+
+                        if (mentionEvent.isCancelled()) continue;
                         if (!target.isOnline()) continue;
                         if (!recipientIds.contains(target.getUniqueId())) continue;
                         target.sendActionBar(lang.getFormated("other.you-mentioned"));
@@ -175,6 +181,12 @@ public class ChatListener implements Listener {
         if (plugin.getConfig().getBoolean("options.enable-logging", true)) {
             plugin.getServer().getConsoleSender().sendMessage(formatted);
         }
+
+        messageSentEvent.setMessageContent(formatted);
+
+        Bukkit.getPluginManager().callEvent(messageSentEvent);
+
+        if (messageSentEvent.isCancelled()) return;
 
         event.setCancelled(true);
     }
@@ -191,6 +203,7 @@ public class ChatListener implements Listener {
         Component name = meta.hasItemName() ? meta.itemName() : Component.text(itemStack.getType().name());
         List<Component> lore = meta.hasLore() ? meta.lore() : List.of();
 
+        assert lore != null;
         Component hoverContent = Component.join(JoinConfiguration.newlines(), lore);
 
         return Component.text("[")
