@@ -150,8 +150,20 @@ public class ChatListener implements Listener {
             }
         }
 
+        messageSentEvent.setMessageContent(formatted);
+
         int radius = chat.radius();
         Set<UUID> recipientIds = new HashSet<>();
+
+        Bukkit.getPluginManager().callEvent(messageSentEvent);
+
+        formatted = messageSentEvent.getMessageContent();
+
+        if (messageSentEvent.isCancelled()) {
+            event.setCancelled(true);
+            return;
+        }
+
         for (Player p : Bukkit.getOnlinePlayers()) {
             boolean inRange = radius == -1 || (p.getWorld().equals(player.getWorld())
                     && p.getLocation().distance(player.getLocation()) <= radius);
@@ -160,11 +172,14 @@ public class ChatListener implements Listener {
                 recipientIds.add(p.getUniqueId());
             }
         }
+
+
         if (plugin.getConfig().getBoolean("options.experiments.mentions")) {
             if (!mentioned.isEmpty()) {
+                Component finalFormatted = formatted;
                 Bukkit.getScheduler().runTask(plugin, () -> {
                     for (Player target : mentioned) {
-                        MentionEvent mentionEvent = new MentionEvent(player, target, formatted);
+                        MentionEvent mentionEvent = new MentionEvent(player, target, finalFormatted);
                         Bukkit.getPluginManager().callEvent(mentionEvent);
 
                         if (mentionEvent.isCancelled()) continue;
@@ -181,12 +196,6 @@ public class ChatListener implements Listener {
         if (plugin.getConfig().getBoolean("options.enable-logging", true)) {
             plugin.getServer().getConsoleSender().sendMessage(formatted);
         }
-
-        messageSentEvent.setMessageContent(formatted);
-
-        Bukkit.getPluginManager().callEvent(messageSentEvent);
-
-        if (messageSentEvent.isCancelled()) return;
 
         event.setCancelled(true);
     }
