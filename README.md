@@ -1,5 +1,8 @@
 # LazyChat | [![Maven Central](https://img.shields.io/maven-central/v/io.github.falllazy/lazychat.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.falllazy/lazychat)
 
+[![LazyChat](https://api.mcbanners.com/banner/resource/hangar/LazyChat/banner.png?background__template=PURPLE_TAUPE)](https://hangar.papermc.io/FallLazy/LazyChat)
+[![LazyChat](https://api.mcbanners.com/banner/resource/modrinth/lazychat/banner.png?background__template=MALACHITE_GREEN)](https://modrinth.com/plugin/lazychat)
+
 LazyChat - It's a Chat system, that adds MiniMessage to chat, broadcasts and signs.  
 And... it has a lot of things, that can be configured.
 
