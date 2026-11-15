@@ -4,11 +4,35 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>LazyChat</artifactId>
-    <name>LazyChat</name>
-    <version>2.9</version>
+    <artifactId>lazychat</artifactId>
+    <version>2.9.0</version>
     <packaging>jar</packaging>
-    <groupId>lazychat</groupId>
+    <groupId>io.github.falllazy</groupId>
+
+    <name>LazyChat</name>
+    <description>Plugin for Minecraft servers based on Paper/It forks. Fast and easy to use chat-system plugin.</description>
+    <url>https://github.com/FallLazy/LazyChat</url>
+    <licenses>
+        <license>
+            <name>GPL-3.0-1</name>
+            <url>https://github.com/FallLazy/LazyChat?tab=GPL-3.0-1-ov-file</url>
+            <distribution>url</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>falllazy</id>
+            <name>FallLazy</name>
+            <email>inbogdanin@gmail.com</email>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:https://github.com/falllazy/LazyChat-MC-plugin.git</connection>
+        <developerConnection>scm:git:https://github.com/falllazy/LazyChat-MC-plugin.git</developerConnection>
+        <url>https://github.com/falllazy/LazyChat-MC-plugin</url>
+    </scm>
 
     <properties>
       <java.version>21</java.version>
@@ -46,7 +70,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21-R0.1-SNAPSHOT</version>
+            <version>1.21-R0.1-20240810.100446-132</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -169,6 +193,53 @@
                     </configuration>
                 </execution>
             </executions>
+        </plugin>
+
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>3.3.1</version>
+            <executions>
+                <execution>
+                    <id>attach-sources</id>
+                    <goals><goal>jar-no-fork</goal></goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.jetbrains.dokka</groupId>
+            <artifactId>dokka-maven-plugin</artifactId>
+            <version>2.3.0</version>
+            <executions>
+                <execution>
+                    <phase>prepare-package</phase>
+                    <goals>
+                        <goal>javadocJar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>3.2.4</version>
+            <executions>
+                <execution>
+                    <id>sign-artifacts</id>
+                    <phase>verify</phase>
+                    <goals><goal>sign</goal></goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.sonatype.central</groupId>
+            <artifactId>central-publishing-maven-plugin</artifactId>
+            <version>0.8.0</version>
+            <extensions>true</extensions>
+            <configuration>
+                <publishingServerId>central</publishingServerId>
+                <autoPublish>true</autoPublish>
+            </configuration>
         </plugin>
     </plugins>
     <resources>

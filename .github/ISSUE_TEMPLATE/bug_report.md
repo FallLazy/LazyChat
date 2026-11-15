@@ -26,8 +26,8 @@ If applicable, add screenshots to help explain your problem.
 **Logs**
 Send your logs, if you can.
 
-**Verison**
-Let us know your version. It important.
+**Version**
+Let know your version. It important.
 
 **Additional context**
 Add any other context about the problem here.

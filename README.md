@@ -1,4 +1,4 @@
-# LazyChat | [![](https://jitpack.io/v/FallLazy/LazyChat.svg)](https://jitpack.io/#FallLazy/LazyChat)
+# LazyChat | [![Maven Central](https://img.shields.io/maven-central/v/io.github.falllazy/lazychat.svg?label=Maven%20Central)](https://central.sonatype.com/artifact/io.github.falllazy/lazychat)
 
 LazyChat - It's a Chat system, that adds MiniMessage to chat, broadcasts and signs.  
 And... it has a lot of things, that can be configured.
@@ -6,18 +6,21 @@ And... it has a lot of things, that can be configured.
 [Documentation of plugin](https://falllazy.github.io/LazyChat_docs/) (ukr is outdated)
 
 ## For developers
+
+#### Important:
+project using `dev.falllazy.lazyChat`, not `io.github.falllazy.lazychat`. `io.github.falllazy.lazychat` is only for Maven Central
+
 ### Gradle  
-Add repository to your build.gradle:
+Add `mavenCentral()` to your build.gradle if you don't have it:
 ```groovy
 repositories {
 	mavenCentral()
-	maven { url 'https://jitpack.io' }
 }
 ```
 And, add the dependency
 ```groovy
 dependencies {
-    implementation 'com.github.FallLazy:LazyChat:VERSION'
+    implementation 'io.github.falllazy:lazychat:VERSION'
     // Replace VERSION with that version, that you want
 }
 ```
@@ -26,32 +29,22 @@ Add repository to your build.gradle.kts
 ```kotlin
 repositories {
     mavenCentral()
-    maven { url = uri("https://jitpack.io") }
 }
 ```
 And, add the dependency
 ```kotlin
 dependencies {
-    implementation("com.github.FallLazy:LazyChat:VERSION")
+    implementation("io.github.falllazy:lazychat:VERSION")
     // Replace VERSION with that version, that you want
 }
 ```
 ### Maven
-Add repository to your pom.xml
+Add the dependency to your project
 ```xml
-	<repositories>
-		<repository>
-		    <id>jitpack.io</id>
-		    <url>https://jitpack.io</url>
-		</repository>
-	</repositories>
-```
-And, add the dependency
-```xml
-	<dependency>
-        <groupId>com.github.FallLazy</groupId>
-        <artifactId>LazyChat</artifactId>
-        <version>VERSION</version>
-    </dependency>
+<dependency>  
+    <groupId>io.github.falllazy</groupId>
+    <artifactId>lazychat</artifactId>
+    <version>VERSION</version>
+</dependency>
 ```
 
