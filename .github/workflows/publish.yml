@@ -23,19 +23,25 @@ jobs:
         run: |
           VERSION=$(head -n 1 CHANGELOG.md | tr -d '\r' | xargs)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-          
+
           tail -n +3 CHANGELOG.md | tr -d '\r' > RELEASE_NOTES.md
-          
+
           echo "CHANGELOG<<EOF" >> $GITHUB_ENV
           cat RELEASE_NOTES.md >> $GITHUB_ENV
           echo "" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
+      - name: Skip notice
+        if: env.VERSION == 'DONOTUPLOAD'
+        run: echo "::notice::VERSION=DONOTUPLOAD — Publish and build was skipped"
+
       - name: Build with Maven
+        if: env.VERSION != 'DONOTUPLOAD'
         run: |
           mvn clean package -DskipTests
 
       - name: Publish to Modrinth
+        if: env.VERSION != 'DONOTUPLOAD'
         uses: Kir-Antipov/mc-publish@v3.3
         with:
           modrinth-id: "2ACqapdC"
