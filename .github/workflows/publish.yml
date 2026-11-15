@@ -46,8 +46,12 @@ jobs:
             target/*.jar
             !target/original-*.jar
           changelog-file: RELEASE_NOTES.md
-          loaders: paper, spigot
-          game-versions: 1.21, 1.21.1
+          loaders: |
+            paper
+            purpur
+          game-versions: |
+            1.21.x
+            26.x
 
       - name: Publish to Hangar
         uses: benwoo1110/hangar-upload-action@v1
