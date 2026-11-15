@@ -35,26 +35,6 @@ jobs:
         run: |
           mvn clean package -DskipTests
 
-      - name: Delete existing versions on Modrinth and Hangar
-        run: |
-          MODRINTH_VER_ID=$(curl -s -H "Authorization: ${{ secrets.MODRINTH_PUBLISH }}" \
-            "https://modrinth.com" | \
-            jq -r ".[] | select(.version_number == \"${{ env.VERSION }}\") | .id")
-
-          if [ -n "$MODRINTH_VER_ID" ] && [ "$MODRINTH_VER_ID" != "null" ]; then
-            echo "Deleting $MODRINTH_VER_ID from Modrinth..."
-            curl -s -X DELETE -H "Authorization: ${{ secrets.MODRINTH_PUBLISH }}" \
-              "https://modrinth.com"
-          fi
-
-          HANGAR_JWT=$(curl -s -X POST "https://papermc.io{{ secrets.HANGAR_PUBLISH }}" | jq -r '.token')
-
-          if [ -n "$HANGAR_JWT" ] && [ "$HANGAR_JWT" != "null" ]; then
-            echo "Try to delete ${{ env.VERSION }} if it exists..."
-            curl -s -X DELETE -H "Authorization: HangarApi $HANGAR_JWT" \
-              "https://papermc.io{{ env.VERSION }}" || true
-          fi
-
       - name: Publish to Modrinth
         uses: Kir-Antipov/mc-publish@v3.3
         with:
