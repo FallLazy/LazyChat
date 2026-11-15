@@ -49,11 +49,12 @@ jobs:
           game-versions: 1.21, 1.21.1
 
       - name: Publish to Hangar
-        uses: ZackPollard/hangar-upload-action@v1
+        uses: benwoo1110/hangar-upload-action@v1
         with:
           api_token: ${{ secrets.HANGAR_PUBLISH }}
           slug: "FallLazy"
           version: ${{ env.VERSION }}
           channel: "Release"
           description: ${{ env.CHANGELOG }}
-          files: '[{"platforms": ["PAPER"], "file": "target/lazychat-${{ env.VERSION }}.jar"}]'
+          files: '[{"path": "target/lazychat-${{ env.VERSION }}.jar", "platforms": ["PAPER"], "platformVersions": ["1.21.x", "26.x"]}]'
+
