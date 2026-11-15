@@ -56,7 +56,7 @@ jobs:
         uses: benwoo1110/hangar-upload-action@v1
         with:
           api_token: ${{ secrets.HANGAR_PUBLISH }}
-          slug: "FallLazy"
+          slug: "LazyChat"
           version: ${{ env.VERSION }}
           channel: "Release"
           description: ${{ env.CHANGELOG }}
