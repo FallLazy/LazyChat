@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
   pull_request:
   push:
-    branches:
-      - master
-      - dev
+    branches: # Specify your branches here
+      - main # The 'main' branch
+      - 'releases/*' # The release branches
 
 jobs:
   qodana:
@@ -24,5 +24,5 @@ jobs:
         with:
           pr-mode: false
         env:
-          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_598404478 }}
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_1572016083 }}
           QODANA_ENDPOINT: 'https://qodana.cloud'
