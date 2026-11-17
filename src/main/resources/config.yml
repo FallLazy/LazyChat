@@ -1,4 +1,4 @@
-config-version: 6
+config-version: 7
 
 #  @      @@@  @@@@@ @   @  @@@  @   @  @@@  @@@@@            @   @  @@@  @@@@  @@@@@ @@@@  @   @
 #  @     @   @    @   @ @  @     @   @ @   @   @              @@ @@ @   @ @   @ @     @   @ @@  @
@@ -21,7 +21,9 @@ options:
   # Enables some experiments like .json for chats.
   experiments:
     jsonForChats: false
-    mentions: false
+    mentions:
+      enabled: false
+      sound: "entity.experience_orb.pickup"
   # Deprecated functional of plugin
   deprecations:
     ymlForMute: false

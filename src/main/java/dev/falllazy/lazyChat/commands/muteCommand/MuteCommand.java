@@ -85,6 +85,12 @@ public class MuteCommand implements CommandExecutor {
                             Placeholder.component("reason", reason)
 
                     ));
+
+                    if (target.getName() == null) {
+                        sender.sendMessage(lang.getFormated("mute.command.usage"));
+                        return true;
+                    }
+
                     sender.sendMessage(lang.getFormated("mute.messages.muted",
                             Placeholder.parsed("player", target.getName()),
                             Placeholder.parsed("time", timeStr),

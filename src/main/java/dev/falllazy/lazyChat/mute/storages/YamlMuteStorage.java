@@ -1,7 +1,6 @@
 package dev.falllazy.lazyChat.mute.storages;
 
 import dev.falllazy.lazyChat.LazyChat;
-import dev.falllazy.lazyChat.language.LanguageManager;
 import dev.falllazy.lazyChat.mute.MuteInfo;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -10,13 +9,13 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class YamlMuteStorage implements MuteStorage {
     private final File file;
     private final FileConfiguration config;
     private final LazyChat plugin;
-    private final LanguageManager lang;
 
     public YamlMuteStorage(LazyChat plugin) {
         this.plugin = plugin;
@@ -26,7 +25,6 @@ public class YamlMuteStorage implements MuteStorage {
             plugin.saveResource("data/muted_players.yml", false);
         }
         this.config = YamlConfiguration.loadConfiguration(file);
-        this.lang = plugin.getLang();
     }
 
     @Override
@@ -34,7 +32,7 @@ public class YamlMuteStorage implements MuteStorage {
         Map<UUID, MuteInfo> result = new HashMap<>();
         if (config.getConfigurationSection("mutes") == null) return result;
 
-        for (String key : config.getConfigurationSection("mutes").getKeys(false)) {
+        for (String key : Objects.requireNonNull(config.getConfigurationSection("mutes")).getKeys(false)) {
             UUID uuid = UUID.fromString(key);
             String path = "mutes." + key;
             if (config.isLong(path)) {

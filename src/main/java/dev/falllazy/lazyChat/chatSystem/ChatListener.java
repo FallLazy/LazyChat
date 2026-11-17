@@ -20,15 +20,16 @@ import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.cacheddata.CachedMetaData;
 import net.luckperms.api.platform.PlayerAdapter;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.HashSet;
@@ -41,8 +42,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class ChatListener implements Listener {
-    private final JavaPlugin plugin;
-    private final LazyChat lazyChat;
+    private final LazyChat plugin;
     private final CManager chatManager;
     private final LanguageManager lang;
     private LuckPerms luckPerms = null;
@@ -56,16 +56,25 @@ public class ChatListener implements Listener {
 
     private record CachedBanWords(long mtime, Pattern pattern, List<String> words) {}
 
+    private final String soundKey;
+
     public ChatListener(LazyChat plugin, CManager chatManager) {
         this.plugin = plugin;
-        this.lazyChat = plugin;
         this.chatManager = chatManager;
         this.lang = plugin.getLang();
         if (plugin.getServer().getPluginManager().isPluginEnabled("LuckPerms")) {
             this.luckPerms = LuckPermsProvider.get();
         }
+        final String rawKey = plugin.getConfig().getString("options.experiments.mentions.sound");
+        if (rawKey == null) {
+            soundKey = "minecraft:entity.experience_orb.pickup";
+        } else {
+            if (!rawKey.contains("minecraft:")) soundKey = "minecraft:" + rawKey.toLowerCase();
+            else soundKey = rawKey.toLowerCase();
+        }
     }
 
+    @SuppressWarnings("PatternValidation")
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onAsyncChat(AsyncChatEvent event) {
         Player player = event.getPlayer();
@@ -77,7 +86,7 @@ public class ChatListener implements Listener {
 
         MessageSentEvent messageSentEvent = new MessageSentEvent(player, false, originalMessage);
 
-        if (lazyChat.muteManager.isMuted(player.getUniqueId())) {
+        if (plugin.muteManager.isMuted(player.getUniqueId())) {
             player.sendMessage(lang.getFormated("mute.messages.you_muted"));
             event.setCancelled(true);
             messageSentEvent.setMuted(true);
@@ -140,8 +149,8 @@ public class ChatListener implements Listener {
 
         double cooldownSec = chat.cooldown();
         if (cooldownSec > 0) {
-            if (!lazyChat.getChatCooldown().checkAndUpdate(player.getUniqueId(), cooldownSec)) {
-                double remaining = lazyChat.getChatCooldown().getRemaining(player.getUniqueId(), cooldownSec);
+            if (!plugin.getChatCooldown().checkAndUpdate(player.getUniqueId(), cooldownSec)) {
+                double remaining = plugin.getChatCooldown().getRemaining(player.getUniqueId(), cooldownSec);
                 player.sendMessage(lang.getFormated("other.cooldown",
                         Placeholder.parsed("seconds", String.format("%.1f", remaining))
                 ));
@@ -174,7 +183,7 @@ public class ChatListener implements Listener {
         }
 
 
-        if (plugin.getConfig().getBoolean("options.experiments.mentions")) {
+        if (plugin.getConfig().getBoolean("options.experiments.mentions.enabled")) {
             if (!mentioned.isEmpty()) {
                 Component finalFormatted = formatted;
                 Bukkit.getScheduler().runTask(plugin, () -> {
@@ -186,10 +195,20 @@ public class ChatListener implements Listener {
                         if (!target.isOnline()) continue;
                         if (!recipientIds.contains(target.getUniqueId())) continue;
                         target.sendActionBar(lang.getFormated("other.you-mentioned"));
-                        Sound sound = Sound.sound(Key.key("block.bell.hit"), Sound.Source.UI, 1f, 2f);
+                        Sound sound = Sound.sound(Key.key(soundKey), Sound.Source.UI, 1f, 2f);
                         target.playSound(sound);
                     }
                 });
+            }
+        }
+
+        if (chat.template().chatBubble().isEnabled()) {
+            if (plugin.getChatBubbleTools().hasBubbles(player.getUniqueId())) {
+                TextDisplay bubble = plugin.getChatBubbleTools().getBubble(player.getUniqueId());
+                plugin.getChatBubbleTools().destroyBubble(bubble);
+                createBubble(player, chat, mm, messageContent);
+            } else {
+                createBubble(player, chat, mm, messageContent);
             }
         }
 
@@ -200,8 +219,28 @@ public class ChatListener implements Listener {
         event.setCancelled(true);
     }
 
+    private void createBubble(Player player, Chat chat, MiniMessage mm, String messageContent) {
+        Location location = player.getLocation();
+        Location bubbleLoc = new Location(location.getWorld() ,location.getX(), location.getY() + 3, location.getZ());
+
+        Component formattedBubble = mm.deserialize(chat.template().chatBubble().getPrompt(),
+                Placeholder.parsed("m", messageContent),
+                Placeholder.parsed("nickname", player.getName()),
+                Placeholder.parsed("prefix", getPrefix(player)),
+                Placeholder.parsed("suffix", getSuffix(player)),
+                Placeholder.component("item", itemTag(player))
+        );
+
+        plugin.getChatBubbleTools().createBubble(formattedBubble, bubbleLoc, player);
+
+        Bukkit.getScheduler().runTaskLater(plugin, task -> {
+            TextDisplay bubble = plugin.getChatBubbleTools().getBubble(player.getUniqueId());
+            plugin.getChatBubbleTools().destroyBubble(bubble);
+        }, (long) chat.template().chatBubble().getShowTime());
+    }
+
     private Component itemTag(Player player) {
-        ItemStack itemStack = player.getActiveItem();
+        ItemStack itemStack = player.getInventory().getItemInMainHand();
 
         if (itemStack.getType().isAir()) {
             return Component.empty();
@@ -226,7 +265,7 @@ public class ChatListener implements Listener {
         Matcher matcher = MENTION_PATTERN.matcher(text);
         StringBuilder sb = new StringBuilder();
         while (matcher.find()) {
-            if (plugin.getConfig().getBoolean("options.experiments.mentions")) {
+            if (plugin.getConfig().getBoolean("options.experiments.mentions.enabled")) {
                 String name = matcher.group(1);
                 Player target = Bukkit.getPlayerExact(name);
                 if (target != null && target.isOnline()) {

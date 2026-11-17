@@ -11,3 +11,7 @@ blacklist:
   #   tags: # Disables custom (and not only) tags.
   #     - newline
   #     - obf
+chatBubble:
+  enabled: false
+  showTime: 2.2
+  prompt: parent

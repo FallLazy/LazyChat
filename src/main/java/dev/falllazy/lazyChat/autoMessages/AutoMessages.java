@@ -20,9 +20,6 @@ public class AutoMessages {
     private final LazyChat plugin;
     private final MiniMessage mm = MiniMessage.miniMessage();
 
-    private File messagesFile;
-    private FileConfiguration messages;
-
     private final Map<String, AutoMessage> autoMessageMap = new HashMap<>();
     private final List<BukkitTask> runningTasks = new ArrayList<>();
 
@@ -34,11 +31,11 @@ public class AutoMessages {
     public void load() {
         stopAll();
 
-        messagesFile = new File(plugin.getDataFolder(), "data/automessages.yml");
+        File messagesFile = new File(plugin.getDataFolder(), "data/automessages.yml");
         if (!messagesFile.exists()) {
             plugin.saveResource("data/automessages.yml", false);
         }
-        messages = YamlConfiguration.loadConfiguration(messagesFile);
+        FileConfiguration messages = YamlConfiguration.loadConfiguration(messagesFile);
         autoMessageMap.clear();
 
         for (String key : messages.getKeys(false)) {
@@ -87,6 +84,7 @@ public class AutoMessages {
         runningTasks.clear();
     }
 
+    @SuppressWarnings("unused")
     public Map<String, AutoMessage> getAutoMessageMap() {
         return Map.copyOf(autoMessageMap);
     }

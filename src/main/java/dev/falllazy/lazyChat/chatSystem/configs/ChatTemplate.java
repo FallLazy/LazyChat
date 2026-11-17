@@ -9,14 +9,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
-public record ChatTemplate(String prompt, BlacklistConfig blacklist, Double cooldown) {
+public record ChatTemplate(String prompt, BlacklistConfig blacklist, Double cooldown, ChatBubble chatBubble) {
 
     public static ChatTemplate load(File file, boolean experimentalJson) throws IOException {
         String name = file.getName().toLowerCase();
         if (name.endsWith(".yml") || name.endsWith(".yaml")) {
             YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+
             String prompt = yaml.getString("config.prompt", "");
             Double cooldown = yaml.contains("config.cooldown") ? yaml.getDouble("config.cooldown") : null;
+
             BlacklistConfig blacklist = new BlacklistConfig();
             blacklist.setGlobal(yaml.getBoolean("blacklist.global", true));
             if (!blacklist.isGlobal()) {
@@ -24,14 +26,27 @@ public record ChatTemplate(String prompt, BlacklistConfig blacklist, Double cool
                 blacklist.setGradients(yaml.getBoolean("blacklist.config.gradients", false));
                 blacklist.setTags(yaml.getStringList("blacklist.config.tags"));
             }
-            return new ChatTemplate(prompt, blacklist, cooldown);
+
+            ChatBubble chatBubble1 = new ChatBubble();
+            if (yaml.getString("chatBubble") == null) chatBubble1.setEnabled(false);
+            chatBubble1.setEnabled(yaml.getBoolean("chatBubble.enabled"));
+            if (chatBubble1.isEnabled()) {
+                chatBubble1.setShowTime(yaml.getDouble("chatBubble.showTime"));
+                chatBubble1.setPrompt(yaml.getString("chatBubble.prompt"));
+                if (chatBubble1.getPrompt().equals("parent")) chatBubble1.setPrompt(prompt);
+                if (chatBubble1.getPrompt().isBlank()) chatBubble1.setEnabled(false);
+            }
+
+            return new ChatTemplate(prompt, blacklist, cooldown, chatBubble1);
         } else if (name.endsWith(".json") && experimentalJson) {
             Gson gson = new Gson();
             try (FileReader reader = new FileReader(file)) {
                 JsonObject root = gson.fromJson(reader, JsonObject.class);
+
                 JsonObject config = root.getAsJsonObject("config");
                 String prompt = config.get("prompt").getAsString();
                 Double cooldown = config.has("cooldown") ? config.get("cooldown").getAsDouble() : null;
+
                 JsonObject blacklistObj = root.getAsJsonObject("blacklist");
                 BlacklistConfig blacklist = new BlacklistConfig();
                 blacklist.setGlobal(blacklistObj.get("global").getAsBoolean());
@@ -41,7 +56,19 @@ public record ChatTemplate(String prompt, BlacklistConfig blacklist, Double cool
                     blacklist.setGradients(cfg.get("gradients").getAsBoolean());
                     blacklist.setTags(gson.fromJson(cfg.get("tags"), List.class));
                 }
-                return new ChatTemplate(prompt, blacklist, cooldown);
+
+                JsonObject chatBubbleObj = root.getAsJsonObject("chatBubble");
+                ChatBubble chatBubble1 = new ChatBubble();
+                if (chatBubbleObj.isEmpty()) chatBubble1.setEnabled(false);
+                chatBubble1.setEnabled(chatBubbleObj.get("enabled").getAsBoolean());
+                if (chatBubble1.isEnabled()) {
+                    chatBubble1.setShowTime(chatBubbleObj.get("showTime").getAsDouble());
+                    chatBubble1.setPrompt(chatBubbleObj.get("prompt").getAsString());
+                    if (chatBubble1.getPrompt().equals("parent")) chatBubble1.setPrompt(prompt);
+                    if (chatBubble1.getPrompt().isBlank()) chatBubble1.setEnabled(false);
+                }
+
+                return new ChatTemplate(prompt, blacklist, cooldown, chatBubble1);
             }
         } else {
             throw new IOException("Unsupported file format or JSON experiments disabled");

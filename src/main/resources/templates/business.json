@@ -12,5 +12,10 @@
         "newline", "obf", "b", "i"
       ]
     }
+  },
+  "chatBubble": {
+    "enabled": false,
+    "showTime": 2.2,
+    "prompt": "parent"
   }
 }

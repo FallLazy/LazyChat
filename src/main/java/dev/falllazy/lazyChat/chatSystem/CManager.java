@@ -8,6 +8,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.util.*;
 
+@SuppressWarnings("unused")
 public class CManager {
     private final JavaPlugin plugin;
     private final Map<String, Chat> chats = new HashMap<>();
@@ -19,6 +20,7 @@ public class CManager {
         reload();
     }
 
+    @SuppressWarnings("unchecked")
     public void reload() {
         chats.clear();
         FileConfiguration config = plugin.getConfig();

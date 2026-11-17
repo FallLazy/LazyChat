@@ -11,7 +11,7 @@ And... it has a lot of things, that can be configured.
 ## For developers
 
 #### Important:
-project using `dev.falllazy.lazyChat`, not `io.github.falllazy.lazychat`. `io.github.falllazy.lazychat` is only for Maven Central
+project using `dev.falllazy.plugin`, not `io.github.falllazy.lazychat`. `io.github.falllazy.lazychat` is only for Maven Central
 
 ### Gradle  
 Add `mavenCentral()` to your build.gradle if you don't have it:

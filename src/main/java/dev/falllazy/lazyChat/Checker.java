@@ -6,11 +6,13 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 
+@SuppressWarnings(value = "UnstableApiUsage")
 public class Checker {
     private final JavaPlugin plugin;
     private static final String MODRINTH_SLUG = "lazychat";
@@ -23,8 +25,8 @@ public class Checker {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 String baseUrl = "https://api.modrinth.com/v2/project/" + MODRINTH_SLUG + "/version";
-                String query = "?loaders=" + URLEncoder.encode("[\"paper\"]", StandardCharsets.UTF_8.name());
-                URL url = new URL(baseUrl + query);
+                String query = "?loaders=" + URLEncoder.encode("[\"paper\"]", StandardCharsets.UTF_8);
+                URL url = new URI(baseUrl + query).toURL();
 
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");

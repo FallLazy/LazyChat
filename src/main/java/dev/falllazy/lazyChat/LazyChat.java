@@ -1,5 +1,7 @@
 package dev.falllazy.lazyChat;
 
+import dev.falllazy.lazyChat.api.tools.ChatBubbleTools;
+import dev.falllazy.lazyChat.api.tools.FeatureChecker;
 import dev.falllazy.lazyChat.autoMessages.AutoMessages;
 import dev.falllazy.lazyChat.chatSystem.CManager;
 import dev.falllazy.lazyChat.chatSystem.ChatListener;
@@ -12,10 +14,12 @@ import dev.falllazy.lazyChat.commands.muteCommand.MuteCommand;
 import dev.falllazy.lazyChat.commands.muteCommand.MuteCommandCompleter;
 import dev.falllazy.lazyChat.listeners.FormatListener;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Objects;
 
+@SuppressWarnings(value = "UnstableApiUsage")
 public final class LazyChat extends JavaPlugin {
     public String currentVersion = this.getPluginMeta().getVersion().toLowerCase();
     public MuteManager muteManager;
@@ -24,9 +28,15 @@ public final class LazyChat extends JavaPlugin {
     private CooldownThings chatCooldown;
     private CooldownThings broadcastCooldown;
     private AutoMessages autoMessages;
+    private ChatBubbleTools chatBubbleTools;
 
     @Override
     public void onEnable() {
+        if (!FeatureChecker.Bubble.isSupported()) {
+            getLogger().severe("Chat bubbles cannot be used because it's not supported on your server!");
+        }
+
+        chatBubbleTools = new ChatBubbleTools(this);
         saveDefaultConfig();
         sendLog();
         saveFiles();
@@ -67,6 +77,7 @@ public final class LazyChat extends JavaPlugin {
         broadcastCooldown = new CooldownThings();
 
         // And finally, CHAT!
+        if (FeatureChecker.Bubble.isSupported()) getLogger().info("Tip: You can use Chat Bubbles!");
         chatManager = new CManager(this);
         getServer().getPluginManager().registerEvents(new ChatListener(this,chatManager), this);
 
@@ -88,6 +99,9 @@ public final class LazyChat extends JavaPlugin {
     }
     public AutoMessages getAutoMessages() {
         return autoMessages;
+    }
+    public ChatBubbleTools getChatBubbleTools() {
+        return chatBubbleTools;
     }
 
     private void saveFiles() {
@@ -114,21 +128,23 @@ public final class LazyChat extends JavaPlugin {
 
         int currentVersion = getConfig().getInt("config-version");
 
-        if (currentVersion == 5) {
-            getLogger().warning("Config version is 5. Converting it");
+        if (currentVersion < 7) {
+            getLogger().warning("Config version is lower than 7. Converting it");
 
             boolean databaseForMutes = getConfig().getBoolean("options.experiments.databasesForMutes");
+            boolean mentionsEnabled = getConfig().getBoolean("options.experiments.mentions");
 
-            getConfig().set("config-version", 6);
+            getConfig().set("config-version", 7);
             getConfig().set("options.deprecations.ymlForMute", !databaseForMutes);
             getConfig().set("options.experiments.databasesForMutes", null);
+            getConfig().set("options.experiments.mentions.enabled", mentionsEnabled);
 
             getConfig().options().copyDefaults(true);
 
             saveConfig();
             getLogger().info("Converted!");
         }
-        else if (currentVersion == 6) {
+        else if (currentVersion == 7) {
             getLogger().info("Config version is actual!");
         }
     }
@@ -154,5 +170,6 @@ public final class LazyChat extends JavaPlugin {
         if (muteManager != null) {
             muteManager.close();
         }
+        chatBubbleTools.shutdown();
     }
 }

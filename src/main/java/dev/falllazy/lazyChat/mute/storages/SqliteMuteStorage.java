@@ -1,7 +1,6 @@
 package dev.falllazy.lazyChat.mute.storages;
 
 import dev.falllazy.lazyChat.LazyChat;
-import dev.falllazy.lazyChat.language.LanguageManager;
 import dev.falllazy.lazyChat.mute.MuteInfo;
 
 import java.sql.*;
@@ -12,11 +11,9 @@ import java.util.UUID;
 public class SqliteMuteStorage implements MuteStorage {
     private final Connection connection;
     private final LazyChat plugin;
-    private final LanguageManager lang;
 
     public SqliteMuteStorage(LazyChat plugin) {
         this.plugin = plugin;
-        this.lang = plugin.getLang();
         try {
             Class.forName("org.sqlite.JDBC");
             String dbPath = plugin.getDataFolder().getAbsolutePath() + "/data/mutes.db";
